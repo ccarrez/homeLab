@@ -1,0 +1,31 @@
+services:
+  web:
+    image: 'gitlab/gitlab-ce:17.2.2-ce.0'
+    container_name: gitlab_ce
+    restart: always
+    hostname: 'localhost'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://localhost'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    volumes:
+      - '~/gitlab/config:/etc/gitlab'
+      - '~/gitlab/logs:/var/log/gitlab'
+      - '~/gitlab/data:/var/opt/gitlab'
+    shm_size: '256m'
+    secrets:
+      - gitlab_root_password
+
+  gitlab_docs:
+    image: registry.gitlab.com/gitlab-org/gitlab-docs:17.2
+    container_name: gitlab_ce_docs
+    hostname: 'https://localhost:4000'
+    ports:
+      - '4000:4000'
+
+secrets:
+  gitlab_root_password:
+    file: ./root_password.txt
