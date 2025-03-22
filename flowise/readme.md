@@ -1,7 +1,11 @@
 # Ollama
 ## Installation
+Command
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
+```
+Output
+```bash
 >>> Installing ollama to /usr/local
 >>> Downloading Linux amd64 bundle
 ######################################################################## 100.0%
@@ -19,6 +23,9 @@ Created symlink /etc/systemd/system/default.target.wants/ollama.service → /etc
 ## Pull a model
 ```bash
 ollama pull llama3.2
+```
+Output
+```bash
 pulling manifest
 pulling dde5aa3fc5ff... 100% ▕████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏ 2.0 GB
 pulling 966de95ca8a6... 100% ▕████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏ 1.4 KB
