@@ -21,6 +21,7 @@ Created symlink /etc/systemd/system/default.target.wants/ollama.service → /etc
 >>> Install complete. Run "ollama" from the command line.
 ```
 ## Pull a model
+Command
 ```bash
 ollama pull llama3.2
 ```
