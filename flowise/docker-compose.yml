@@ -1,0 +1,47 @@
+services:
+  flowise-db:
+    image: postgres:16-alpine
+    hostname: flowise-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./flowise-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  flowise:
+    image: flowiseai/flowise:latest
+    container_name: flowiseai
+    hostname: flowise
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:${PORT}
+    ports:
+      - 5023:${PORT}
+    volumes:
+      - ./flowiseai:/root/.flowise
+    environment:
+      DEBUG: false
+      PORT: ${PORT}
+      FLOWISE_USERNAME: ${FLOWISE_USERNAME}
+      FLOWISE_PASSWORD: ${FLOWISE_PASSWORD}
+      APIKEY_PATH: /root/.flowise
+      SECRETKEY_PATH: /root/.flowise
+      LOG_LEVEL: info
+      LOG_PATH: /root/.flowise/logs
+      DATABASE_TYPE: postgres
+      DATABASE_PORT: 5432
+      DATABASE_HOST: flowise-db
+      DATABASE_NAME: ${POSTGRES_DB}
+      DATABASE_USER: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: on-failure:5
+    depends_on:
+      flowise-db:
+        condition: service_healthy
+    entrypoint: /bin/sh -c "sleep 3; flowise start"
